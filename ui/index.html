@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket demo</title>
+    <pre id="state"></pre>
+</head>
+<body>
+<script src="js/dayjs.min.js"></script>
+<script>
+    let state = document.getElementById("state");
+    let ws = new WebSocket("ws://127.0.0.1:5678/");
+    ws.onmessage = function (event) {
+        state.innerText = formatData(event.data);
+    };
+
+    function formatData(data) {
+        try {
+            let json = JSON.parse(data);
+            json.time = `${dayjs().format('YYYY-MM-DD HH:mm:ss')}`;
+
+            return JSON.stringify(json, null, 2);
+        }
+        catch (e) {
+            return data;
+        }
+    }
+</script>
+</body>
+</html>
