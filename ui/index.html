@@ -1,35 +1,65 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>WebSocket demo</title>
-    <pre id="state"></pre>
-    <button type="button" id="exit">Exit</button>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Sensor Send</title>
 </head>
-<body>
-<script src="js/dayjs.min.js"></script>
-<script>
-    let state = document.getElementById("state");
-    let ws = new WebSocket("ws://127.0.0.1:5678/");
-    ws.onmessage = function (event) {
-        state.innerText = formatData(event.data);
-    };
 
-    document.getElementById("exit").onclick = () => {
-        window.close();
-    };
+<body class="bg-dark">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">Pool</div>
+                <div class="card-body">
+                    <p class="card-text">Pool temp here</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">Indoor</div>
+                <div class="card-body">
+                    <p class="card-text">
+                    <div class="row">
+                        <h1 class="display-1" id="air_temp"></h1>
+                    </div>
+                    <div class="row">
+                        <h1 class="display-1" id="air_hum"></h1>
+                    </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    function formatData(data) {
-        try {
-            let json = JSON.parse(data);
-            json.time = `${dayjs().format('YYYY-MM-DD HH:mm:ss')}`;
+    <button type="button" id="exit" class="btn btn-danger">Exit</button>
+    <button type="button" id="refresh" class="btn btn-primary">Refresh</button>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/dayjs.min.js"></script>
+    <script>
+        let airTemp = document.getElementById("air_temp");
+        let airHum = document.getElementById("air_hum");
 
-            return JSON.stringify(json, null, 2);
-        }
-        catch (e) {
-            return data;
-        }
-    }
-</script>
+        let ws = new WebSocket("ws://127.0.0.1:5678/");
+        ws.onmessage = function (event) {
+            let json = JSON.parse(event.data);
+
+
+            airTemp.innerText = json.temp;
+            airHum.innerText = json.humidity;
+        };
+
+        document.getElementById("exit").onclick = () => {
+            window.close();
+        };
+
+        document.getElementById("refresh").onclick = () => {
+            window.location = window.location;
+        };
+    </script>
 </body>
+
 </html>
