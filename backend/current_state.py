@@ -9,7 +9,9 @@ class State:
         self.do_run_thread = True
         self.serial = None
         try:
-            self.serial = serial.Serial(port="/dev/tty.usbserial-120", baudrate=9600)
+            self.serial = serial.Serial(
+                port="/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0", 
+                baudrate=9600)
         except:
             pass
 
