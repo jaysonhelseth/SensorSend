@@ -25,7 +25,8 @@ Encoding=UTF-8
 Name=Temp Display
 Comment=Temperature Display
 # Icon=/home/pi/Downloads/icon.png
-Exec=/usr/bin/chromium-browser --kiosk file:///home/pi/projects/SensorSend/ui/index.html
+# Exec=/usr/bin/chromium-browser --kiosk file:///home/pi/projects/SensorSend/ui/index.html
+Exec=/home/pi/projects/SensorSend/run.sh
 Terminal=false
 Categories=Graphics
 ```
