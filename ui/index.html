@@ -6,34 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <title>Sensor Send</title>
+    <style>
+        .temp {
+            font-family: monospace;
+            font-size: 10.7em;
+        }
+        .heading {
+            font-size: 3em;
+        }
+        .wide-button {
+            width: 25%;
+        }
+    </style>
 </head>
 
 <body class="bg-dark">
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="card">
-                <div class="card-header">Pool</div>
-                <div class="card-body">
-                    <p class="card-text">Pool temp here</p>
+    <div class="container-fluid" style="margin-top:5px;">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card text-center border-light bg-dark text-white mb-3">
+                    <div class="card-header border-light heading">Pool</div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <div class="row">
+                                <span class="temp">72.5</span>
+                            </div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card text-center border-light bg-dark text-white mb-3">
+                    <div class="card-header border-light heading">Indoor</div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <div class="row">
+                                <span class="temp" id="air_temp"></span>
+                            </div>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="card text-center border-light bg-dark text-white mb-3">
-                <div class="card-header border-light">Indoor</div>
-                <div class="card-body">
-                    <p class="card-text">
-                        <div class="row">
-                            <h1 class="display-1" id="air_temp"></h1>
-                        </div>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <button type="button" id="exit" class="btn btn-danger">Exit</button>
-    <button type="button" id="refresh" class="btn btn-primary">Refresh</button>
+        <nav class="navbar fixed-bottom navbar-dark bg-dark">
+            <div class="container-fluid">
+                <button type="button" id="refresh" class="btn btn-light btn-lg wide-button">Refresh</button>
+                <button type="button" id="exit" class="btn btn-light btn-lg wide-button">Exit</button>
+                </div>
+            </div>
+          </nav>
+    </div>
+    
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/dayjs.min.js"></script>
     <script>
@@ -43,10 +67,7 @@
         let ws = new WebSocket("ws://127.0.0.1:5678/");
         ws.onmessage = function (event) {
             let json = JSON.parse(event.data);
-
-
-            airTemp.innerText = json.temp;
-            airHum.innerText = json.humidity;
+            airTemp.innerText = json.temp.toFixed(1);
         };
 
         document.getElementById("exit").onclick = () => {
