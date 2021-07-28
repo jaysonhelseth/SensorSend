@@ -14,3 +14,18 @@ DRIVERS=="usb",
 SYMLINK+="device_%s{serial}"
 ```
 Then in the code you can reference by serial number instead!
+
+## Desktop Entry
+Create in ~/Desktop a file like Temp.desktop.
+```
+[Desktop Entry]
+Version=1.0
+Type=Application
+Encoding=UTF-8
+Name=Temp Display
+Comment=Temperature Display
+# Icon=/home/pi/Downloads/icon.png
+Exec=/usr/bin/chromium-browser --kiosk file:///home/pi/projects/SensorSend/ui/index.html
+Terminal=false
+Categories=Graphics
+```
