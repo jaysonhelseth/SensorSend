@@ -1,6 +1,7 @@
 import json
 import time
 import serial
+from digi.xbee.devices import XBeeDevice, RemoteXBeeDevice, XBee64BitAddress
 
 
 class State:
@@ -12,6 +13,11 @@ class State:
             self.serial = serial.Serial(
                 port="/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0", 
                 baudrate=9600)
+            
+            self.xbee = XBeeDevice(
+                port="/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D309RJOH-if00-port0",
+                baud_rate=9600)
+            self.xbee.open()
         except:
             pass
 
@@ -20,8 +26,11 @@ class State:
             try:
                 self.check_status()
                 data = self.serial.readline()
+                
                 msg = data.decode("utf-8").strip("\n")
+                self.xbee.send_data_broadcast(msg)
                 self.msg = msg
+
             except:
                 if self.serial is not None:
                     self.serial.close()
@@ -39,6 +48,7 @@ class State:
 
         if not self.serial.is_open:
             self.serial.open()
+
 
     def jsonify(self):
         if self.msg is None:
