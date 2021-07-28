@@ -30,3 +30,9 @@ Exec=/home/pi/projects/SensorSend/run.sh
 Terminal=false
 Categories=Graphics
 ```
+
+## Auto Start on Boot
+```
+# This is the way it would work for Raspberry Pi OS
+sudo ln -s /home/pi/Desktop/Temp.desktop /etc/xdg/autostart
+```
