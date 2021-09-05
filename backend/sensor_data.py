@@ -12,6 +12,10 @@ class SensorData:
         self.temp = my_json["temp"]
         self.humidity = my_json["humidity"]
 
+    def set_pool(self, string):
+        my_json = json.loads(string)
+        self.pool = my_json["temp"]
+
     def jsonify(self) -> str:
         string = self.__dict__
         return json.dumps(string)

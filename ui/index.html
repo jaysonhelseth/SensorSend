@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <p class="card-text">
                             <div class="row">
-                                <span class="temp">72.5</span>
+                                <span class="temp" id="pool"></span>
                             </div>
                         </p>
                     </div>
@@ -64,6 +64,7 @@
     <script>
         let airTemp = document.getElementById("air_temp");
         let airHum = document.getElementById("air_hum");
+        let pool = document.getElementById("pool");
 
         function poll() {
             $.ajax("http://127.0.0.1:5000/")
@@ -74,6 +75,7 @@
 
                 let json = JSON.parse(data);
                 airTemp.innerText = json.temp.toFixed(1);
+                pool.innerText = json.pool.toFixed(1);
             });
         }
         poll();
