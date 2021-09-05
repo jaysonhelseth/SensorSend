@@ -3,7 +3,7 @@ import os
 import werkzeug
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
-from backend.sensor_data import SensorData
+from sensor_data import SensorData
 from digi.xbee.devices import XBeeDevice, RemoteXBeeDevice, XBee64BitAddress
 
 app = Flask(__name__)
