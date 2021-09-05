@@ -49,11 +49,11 @@
             </div>
         </div>
 
-        <nav class="navbar fixed-bottom navbar-dark bg-dark">
+        <nav class="navbar fixed-bottom navbar-dark bg-dark text-white">
             <div class="container-fluid">
                 <button type="button" id="refresh" class="btn btn-light btn-lg wide-button">Refresh</button>
+                <div class="heading">Humidity: <span id="air_hum"></span></div>
                 <button type="button" id="exit" class="btn btn-light btn-lg wide-button">Exit</button>
-                </div>
             </div>
           </nav>
     </div>
@@ -76,6 +76,7 @@
                 let json = JSON.parse(data);
                 airTemp.innerText = json.temp.toFixed(1);
                 pool.innerText = json.pool.toFixed(1);
+                airHum.innerText = json.humidity;
             });
         }
         poll();
