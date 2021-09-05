@@ -27,7 +27,7 @@ class State:
                 self.check_status()
                 data = self.serial.readline()
                 
-                msg = data.decode("utf-8").strip("\n")
+                msg = data.decode("utf-8", errors="ignore").strip("\n")
                 self.xbee.send_data_broadcast(msg)
                 self.msg = msg
 
