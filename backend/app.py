@@ -1,17 +1,16 @@
 import serial
 import os
 import werkzeug
+import sys
+from serial import SerialException
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from sensor_data import SensorData
-from digi.xbee.devices import XBeeDevice, RemoteXBeeDevice, XBee64BitAddress
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-air_sensor = serial.Serial(port=os.getenv("AIR_SENSOR"), baudrate=9600)
-pool_sensor = serial.Serial(port=os.getenv("POOL_SENSOR"), baudrate=9600)
-xbee_sender = XBeeDevice(port=os.getenv("XBEE_SENDER"), baud_rate=9600)
+locked = False
 
 
 @app.route("/")
@@ -25,13 +24,22 @@ def display_data():
         shutdown_func()
         return ""
 
-    send_data(msg)
+    # send_data(msg)
     return msg
 
 
 def read_data():
-    global air_sensor
-    global pool_sensor
+    global locked
+    
+    air_sensor = serial.Serial(port=os.getenv("AIR_SENSOR"), baudrate=9600)
+    pool_sensor = serial.Serial(port=os.getenv("POOL_SENSOR"), baudrate=9600)
+    
+    if locked is True:
+        print("The read thread is locked.")
+        return f'{{ "msg": "locked" }}'
+
+
+    locked = True
 
     if air_sensor.closed:
         air_sensor.open()
@@ -42,33 +50,40 @@ def read_data():
     sensor_data = SensorData()
 
     try:
-        air_data = air_sensor.readline()
+        air_data = b''
+        while len(air_data) < 1:
+            air_data = air_sensor.read_until("\n".encode())
+
         temp_humidity = air_data.decode("utf-8", errors="ignore").strip("\n")
         sensor_data.set_temp_humidity(temp_humidity)
 
-        pool_data = pool_sensor.readline()
+        pool_data = b''
+        while len(pool_data) < 1:
+            pool_data = pool_sensor.read_until("\n".encode())
+
         pool_temp = pool_data.decode("utf-8", errors="ignore").strip("\n")
         sensor_data.set_pool(pool_temp)
 
         msg = sensor_data.jsonify()
         print(msg)
-        return msg
-    except:
+        locked = False
+
         air_sensor.close()
         pool_sensor.close()
-
-
-def send_data(payload):
-    global xbee_sender
-
-    if not xbee_sender.is_open():
-        xbee_sender.open()
-
-    try:
-        xbee_sender.send_data_broadcast(payload)
+        return msg
+        
+    except SerialException as serialEx:
+        print(serialEx.message)
+        air_sensor.close()
+        pool_sensor.close()
+        locked = False
+        return f'{{ "msg": "{serialEx.message}" }}'
     except:
-        xbee_sender.close()
-
+        print("Unexpected error:", sys.exc_info()[0])
+        air_sensor.close()
+        pool_sensor.close()
+        locked = False
+        return f'{{ "msg": "{sys.exc_info()[0]}" }}'
 
 if __name__ == '__main__':
     app.run()

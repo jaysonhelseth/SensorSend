@@ -1,4 +1,6 @@
 import json
+from json import JSONDecodeError
+
 
 
 class SensorData:
@@ -8,14 +10,23 @@ class SensorData:
         self.pool = 0.0
 
     def set_temp_humidity(self, string):
-        my_json = json.loads(string)
-        self.temp = my_json["temp"]
-        self.humidity = my_json["humidity"]
+        try:
+            my_json = json.loads(string)
+            self.temp = my_json["temp"]
+            self.humidity = my_json["humidity"]
+        except JSONDecodeError:
+            print(f"Error decoding air/temp {string}")
 
     def set_pool(self, string):
-        my_json = json.loads(string)
-        self.pool = my_json["temp"]
+        try:
+            my_json = json.loads(string)
+            self.pool = my_json["temp"]
+        except JSONDecodeError:
+            print(f"Error decoding pool {string}")
 
     def jsonify(self) -> str:
-        string = self.__dict__
-        return json.dumps(string)
+        try:
+            string = self.__dict__
+            return json.dumps(string)
+        except NameError:
+            print(f"Error jsonifying the object.")
