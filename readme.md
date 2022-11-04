@@ -1,6 +1,6 @@
 # SensorSend
 
-This is a basic flask server that waits for an incoming request and will read from sensors and return the values to the client. Inside of the collection it will also send the data via mqtt to a broker so other services can have the data too. Currently a local host local html page will contact the server every 2 seconds or so to get the data.
+This is a basic flask server that waits for an incoming request and will read from sensors and return the values to the client. Inside of the collection it will also send the data via mqtt to a broker so other services can have the data too. Currently a local html page will contact the server every 2 seconds or so to get the data.
 
 ## Desktop Entry
 Create in ~/Desktop a file like Temp.desktop.
