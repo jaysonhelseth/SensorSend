@@ -2,6 +2,7 @@ import serial
 import os
 import werkzeug
 import sys
+import paho.mqtt.client as mqtt
 from serial import SerialException
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
@@ -66,6 +67,7 @@ def read_data():
 
         msg = sensor_data.jsonify()
         print(msg)
+        send_data(msg)
         locked = False
 
         air_sensor.close()
@@ -84,6 +86,16 @@ def read_data():
         pool_sensor.close()
         locked = False
         return f'{{ "msg": "{sys.exc_info()[0]}" }}'
+
+def send_data(msg):
+    try:
+        client = mqtt.Client()
+        client.connect(os.getenv("MQTT_HOST"), 1883, 60)
+        client.publish("garage/air_temp_pool", msg)
+        client.disconnect()
+    except:
+        print("Could not publish to mqtt.")
+    
 
 if __name__ == '__main__':
     app.run()
